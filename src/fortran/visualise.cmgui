@@ -1,0 +1,46 @@
+# read in solution, which may be split into multiple files
+
+# Temporarily commenting out as glob not available in all version of cmgui
+#@exnodes=<./results/ActiveContraction.part*.exnode>;
+#@exelems=<./results/ActiveContraction.part*.exelem>;
+
+@exnodes=("./results/ActiveContraction.part0.exnode");
+@exelems=("./results/ActiveContraction.part0.exelem");
+
+foreach $filename (@exnodes) {
+    print "Reading $filename\n";
+    gfx read node "$filename";
+}
+foreach $filename (@exelems) {
+    print "Reading $filename\n";
+    gfx read elem "$filename";
+}
+
+gfx define faces egroup "Region"
+
+# define deformed geometry and pressure
+gfx define field "deformed_geom" component Dependent.1 Dependent.2 Dependent.3
+gfx define field "hydrostatic_pressure" component Dependent.4
+
+gfx create window 1
+
+gfx create spectrum pressure
+gfx modify spectrum pressure clear overwrite_colour
+gfx modify spectrum pressure linear reverse range 0.0 1.0 extend_above extend_below rainbow colour_range 0 1
+
+# display deformed geometry
+gfx define faces egroup "Region"
+
+gfx modify g_element "/" general clear;
+gfx modify g_element "/" lines domain_mesh1d subgroup Region coordinate deformed_geom face all tessellation default LOCAL line line_base_size 0 select_on material default selected_material default_selected render_shaded;
+gfx modify g_element "/" surfaces domain_mesh2d subgroup Region coordinate deformed_geom face all tessellation default LOCAL select_on material tissue data hydrostatic_pressure spectrum pressure selected_material default_selected render_shaded;
+gfx modify g_element "/" points domain_nodes subgroup Region coordinate Geometry tessellation default_points LOCAL glyph sphere size "2*2*2" offset 0,0,0 font default select_on material green selected_material default_selected render_shaded;
+gfx modify g_element "/" lines domain_mesh1d subgroup Region coordinate Geometry face all tessellation default LOCAL line line_base_size 0 select_on material green selected_material default_selected render_shaded;
+gfx modify g_element "/" points domain_point tessellation default_points LOCAL glyph axes size "75*60*60" offset 0,0,0 font default select_on material default selected_material default_selected render_shaded;
+gfx modify g_element "/" points domain_point tessellation default_points NORMALISED_WINDOW_FIT_LEFT glyph colour_bar size "0.5*0.5*0.2" offset 0.8,-0.8,0 font default select_on material default selected_material default render_shaded;
+gfx modify g_element "/" points domain_nodes coordinate deformed_geom tessellation default_points LOCAL glyph sphere size "2*2*2" offset 0,0,0 font default select_on material red selected_material default_selected render_shaded;
+
+
+gfx edit scene
+gfx modify window 1 set antialias 2
+gfx modify window 1 view parallel eye_point 20 -200 20 interest_point 20 20 20 up_vector 0 0 1 view_angle 40 near_clipping_plane 1.5 far_clipping_plane 700 relative_viewport ndc_placement -1 1 2 2 viewport_coordinates 0 0 1 1
