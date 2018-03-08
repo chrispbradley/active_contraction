@@ -1,5 +1,5 @@
 ==================
-active_contraction
+Active Contraction
 ==================
 
 Active contraction 
@@ -7,27 +7,22 @@ Active contraction
 Building the example
 ====================
 
-Instructions on how to configure and build with CMake::
+This example can be configure and built with CMake using the following commands::
 
   git clone https://github.com/OpenCMISS-Examples/active_contraction.git
-  mkdir build
+  mkdir active_contraction-build
+  cd active_contraction-build
   cmake -DOpenCMISSLibs_DIR=/path/to/opencmisslib/install ../active_contraction
   make  # cmake --build . will also work here and is much more platform agnostic.
 
 Running the example
 ===================
 
-Explain how the example is run::
+To run the example execute the following commands (assumes current directory is the build directory from 'Building the example')::
 
-  cd build
-  ./src/fortran/active_contraction.F90
+  cd src/fortran
+  ./active_contraction
 
-or maybe it is a Python only example::
-
-  source /path/to/opencmisslibs/install/virtaul_environments/oclibs_venv_pyXY_release/bin/activate
-  python src/python/active_contraction.py
-
-where the XY in the path are the Python major and minor versions respectively.
 
 Prerequisites
 =============
