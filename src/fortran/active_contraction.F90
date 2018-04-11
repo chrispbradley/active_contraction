@@ -57,7 +57,7 @@ PROGRAM ActiveContractionExample
 
   INTEGER(CMISSIntg) :: EquationsSetIndex  
   INTEGER(CMISSIntg) :: NumberOfComputationalNodes,NumberOfDomains,ComputationalNodeNumber
-  INTEGER(CMISSIntg) :: D, E, N, I
+  INTEGER(CMISSIntg) :: D, E, N, I, num_args, ix
 
   REAL(CMISSRP) :: TMP
   REAL(CMISSRP), DIMENSION(1:7) :: COSTA_PARAMS =  [ 0.2, 30.0, 12.0, 14.0, 14.0, 10.0, 18.0 ] ! a bff bfs bfn bss bsn bnn
@@ -87,6 +87,8 @@ PROGRAM ActiveContractionExample
   TYPE(cmfe_NodesType) :: CMNodes
   TYPE(cmfe_ControlLoopType) :: ControlLoop
 
+  character(len=256), dimension(:), allocatable :: args
+
   !Generic CMISS variables
   INTEGER(CMISSIntg) :: Err
 
@@ -104,12 +106,27 @@ PROGRAM ActiveContractionExample
   CALL cmfe_ComputationEnvironment_WorldNodeNumberGet(computationEnvironment,computationalNodeNumber,Err)
 
 
-!  open(unit = 2, file = "./input/hollowcylq-221.in")
-!  open(unit = 3, file = "./input/hollowcylq-221.in.gpactiv")
-  open(unit = 2, file = "./lvq-842.in")
-  open(unit = 3, file = "./lvq-842.in.gpactiv")
-  call read_mesh(2, Elements, Nodes, DirichletConditions, Fibers)
-  call read_activation_times(3, ActivationTimes)
+  num_args = command_argument_count()
+  allocate(args(num_args))
+
+  DO ix = 1, num_args
+    CALL get_command_argument(ix,args(ix))
+  END DO
+
+  IF (num_args .gt. 0) THEN
+    open(unit = 2, file = args(1))
+  ELSE
+!   open(unit = 2, file = "./input/hollowcylq-221.in")
+    open(unit = 2, file = "./lvq-842.in")
+  ENDIF
+  IF (num_args .gt. 1) THEN
+    open(unit = 3, file = args(2))
+  ELSE
+!   open(unit = 3, file = "./input/hollowcylq-221.in.gpactiv")
+    open(unit = 3, file = "./lvq-842.in.gpactiv")
+  ENDIF
+  CALL read_mesh(2, Elements, Nodes, DirichletConditions, Fibers)
+  CALL read_activation_times(3, ActivationTimes)
   close(2)
   close(3)
 
