@@ -72,7 +72,8 @@ PROGRAM ActiveContractionExample
   TYPE(cmfe_BasisType) :: QuadraticBasis, LinearBasis
   TYPE(cmfe_BoundaryConditionsType) :: BoundaryConditions
   TYPE(cmfe_ComputationEnvironmentType) :: computationEnvironment
-  TYPE(cmfe_CoordinateSystemType) :: CoordinateSystem, WorldCoordinateSystem
+  TYPE(cmfe_ContextType) :: context
+  TYPE(cmfe_CoordinateSystemType) :: CoordinateSystem
   TYPE(cmfe_MeshType) :: Mesh
   TYPE(cmfe_DecompositionType) :: Decomposition
   TYPE(cmfe_EquationsType) :: Equations
@@ -93,18 +94,21 @@ PROGRAM ActiveContractionExample
   INTEGER(CMISSIntg) :: Err
 
   !Intialise cmiss
-  CALL cmfe_Initialise(WorldCoordinateSystem,WorldRegion,Err)
-
-  CALL cmfe_ErrorHandlingModeSet(CMFE_ERRORS_TRAP_ERROR,Err)
+  
+  CALL cmfe_Context_Initialise(context,err)
+  CALL cmfe_Initialise(context,err)
+  CALL cmfe_ErrorHandlingModeSet(CMFE_ERRORS_TRAP_ERROR,err)
+  CALL cmfe_Region_Initialise(worldRegion,err)
+  CALL cmfe_Context_WorldRegionGet(context,worldRegion,err)
 
   !Set all diganostic levels on for testing
   !CALL cmfe_DiagnosticsSetOn(CMFE_FROM_DIAG_TYPE,[1,2,3,4,5],"Diagnostics",["PROBLEM_RESIDUAL_EVALUATE"],Err)
 
   !Get the number of computational nodes and this computational node number
   CALL cmfe_ComputationEnvironment_Initialise(computationEnvironment,Err)
+  CALL cmfe_Context_ComputationEnvironmentGet(context,computationEnvironment,err)
   CALL cmfe_ComputationEnvironment_NumberOfWorldNodesGet(computationEnvironment,numberOfComputationalNodes,Err)
   CALL cmfe_ComputationEnvironment_WorldNodeNumberGet(computationEnvironment,computationalNodeNumber,Err)
-
 
   num_args = command_argument_count()
   allocate(args(num_args))
@@ -135,7 +139,7 @@ PROGRAM ActiveContractionExample
 
   !Create a 3D rectangular cartesian coordinate system
   CALL cmfe_CoordinateSystem_Initialise(CoordinateSystem,Err)
-  CALL cmfe_CoordinateSystem_CreateStart(CoordinateSystemUserNumber,CoordinateSystem,Err)
+  CALL cmfe_CoordinateSystem_CreateStart(CoordinateSystemUserNumber,context,CoordinateSystem,Err)
   CALL cmfe_CoordinateSystem_CreateFinish(CoordinateSystem,Err)
 
   !Create a region and assign the coordinate system to the region
@@ -147,11 +151,11 @@ PROGRAM ActiveContractionExample
 
   !Define basis functions - tri-linear Lagrange and tri-Quadratic Lagrange
   CALL cmfe_Basis_Initialise(LinearBasis,Err)
-  CALL cmfe_Basis_CreateStart(LinearBasisUserNumber,LinearBasis,Err)
+  CALL cmfe_Basis_CreateStart(LinearBasisUserNumber,context,LinearBasis,Err)
   CALL cmfe_Basis_CreateFinish(LinearBasis,Err)
 
   CALL cmfe_Basis_Initialise(QuadraticBasis,Err)
-  CALL cmfe_Basis_CreateStart(QuadraticBasisUserNumber,QuadraticBasis,Err)
+  CALL cmfe_Basis_CreateStart(QuadraticBasisUserNumber,context,QuadraticBasis,Err)
   CALL cmfe_Basis_InterpolationXiSet(QuadraticBasis,[CMFE_BASIS_QUADRATIC_LAGRANGE_INTERPOLATION, &
     & CMFE_BASIS_QUADRATIC_LAGRANGE_INTERPOLATION,CMFE_BASIS_QUADRATIC_LAGRANGE_INTERPOLATION],Err)
   CALL cmfe_Basis_QuadratureNumberOfGaussXiSet(QuadraticBasis, &
@@ -344,7 +348,7 @@ PROGRAM ActiveContractionExample
 
   !Define the problem
   CALL cmfe_Problem_Initialise(Problem,Err)
-  CALL cmfe_Problem_CreateStart(ProblemUserNumber,[CMFE_PROBLEM_ELASTICITY_CLASS,CMFE_PROBLEM_FINITE_ELASTICITY_TYPE, &
+  CALL cmfe_Problem_CreateStart(ProblemUserNumber,context,[CMFE_PROBLEM_ELASTICITY_CLASS,CMFE_PROBLEM_FINITE_ELASTICITY_TYPE, &
     & CMFE_PROBLEM_QUASISTATIC_FINITE_ELASTICITY_SUBTYPE],Problem,Err)
    ! CHANGED TO CMFE_PROBLEM_QUASISTATIC_FINITE_ELASTICITY_SUBTYPE
   CALL cmfe_Problem_CreateFinish(Problem,Err)
@@ -408,7 +412,7 @@ PROGRAM ActiveContractionExample
   CALL cmfe_Fields_ElementsExport(Fields,"./results/ActiveContraction","FORTRAN",Err)
   CALL cmfe_Fields_Finalise(Fields,Err)
 
-  CALL cmfe_Finalise(Err)
+  CALL cmfe_Finalise(context,Err)
 
   WRITE(*,'(A)') "Program successfully completed."
 
