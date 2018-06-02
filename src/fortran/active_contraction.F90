@@ -201,7 +201,7 @@ PROGRAM ActiveContractionExample
   !Create a field to put the geometry (default is geometry)
   CALL cmfe_Field_Initialise(GeometricField,Err)
   CALL cmfe_Field_CreateStart(FieldGeometryUserNumber,Region,GeometricField,Err)
-  CALL cmfe_Field_MeshDecompositionSet(GeometricField,Decomposition,Err)
+  CALL cmfe_Field_DecompositionSet(GeometricField,Decomposition,Err)
   CALL cmfe_Field_TypeSet(GeometricField,CMFE_FIELD_GEOMETRIC_TYPE,Err)  
   CALL cmfe_Field_NumberOfVariablesSet(GeometricField,1,Err) ! 1 var
   CALL cmfe_Field_NumberOfComponentsSet(GeometricField,CMFE_FIELD_U_VARIABLE_TYPE,3,Err)   ! 3 components of geom field
@@ -223,7 +223,7 @@ PROGRAM ActiveContractionExample
   CALL cmfe_Field_Initialise(FibreField,Err)
   CALL cmfe_Field_CreateStart(FieldFibreUserNumber,Region,FibreField,Err)
   CALL cmfe_Field_TypeSet(FibreField,CMFE_FIELD_FIBRE_TYPE,Err)
-  CALL cmfe_Field_MeshDecompositionSet(FibreField,Decomposition,Err)        
+  CALL cmfe_Field_DecompositionSet(FibreField,Decomposition,Err)        
   CALL cmfe_Field_GeometricFieldSet(FibreField,GeometricField,Err)
   CALL cmfe_Field_NumberOfComponentsSet(FibreField,CMFE_FIELD_U_VARIABLE_TYPE,3,Err)   ! 1 var, 3 components -> angles!
   CALL cmfe_Field_VariableLabelSet(FibreField,CMFE_FIELD_U_VARIABLE_TYPE,"Fibre",Err)
@@ -248,7 +248,7 @@ PROGRAM ActiveContractionExample
   CALL cmfe_Field_Initialise(GPfield,Err)
   CALL cmfe_Field_CreateStart(FieldGPUserNumber,Region,GPfield,Err)
   CALL cmfe_Field_TypeSet(GPfield,CMFE_FIELD_GENERAL_TYPE,Err) ! ?
-  CALL cmfe_Field_MeshDecompositionSet(GPfield,Decomposition,Err)        
+  CALL cmfe_Field_DecompositionSet(GPfield,Decomposition,Err)        
   CALL cmfe_Field_GeometricFieldSet(GPfield,GeometricField,Err)
 
   CALL cmfe_Field_NumberOfComponentsSet(GPfield,CMFE_FIELD_U_VARIABLE_TYPE,2,Err)
