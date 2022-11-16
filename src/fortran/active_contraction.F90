@@ -20,6 +20,7 @@ PROGRAM ActiveContractionExample
   REAL(CMISSRP), PARAMETER :: WIDTH=1.0_CMISSRP
   REAL(CMISSRP), PARAMETER :: LENGTH=1.0_CMISSRP
 
+  INTEGER(CMISSIntg), PARAMETER :: ContextUserNumber=1
   INTEGER(CMISSIntg), PARAMETER :: CoordinateSystemUserNumber=1
   INTEGER(CMISSIntg), PARAMETER :: RegionUserNumber=1
   INTEGER(CMISSIntg), PARAMETER :: QuadraticBasisUserNumber=1
@@ -93,11 +94,12 @@ PROGRAM ActiveContractionExample
   !Generic CMISS variables
   INTEGER(CMISSIntg) :: Err
 
-  !Intialise cmiss
-  
-  CALL cmfe_Context_Initialise(context,err)
+  !Intialise OpenCMISS
   CALL cmfe_Initialise(context,err)
   CALL cmfe_ErrorHandlingModeSet(CMFE_ERRORS_TRAP_ERROR,err)
+  !Create a context
+  CALL cmfe_Context_Initialise(context,err)
+  CALL cmfe_Context_Create(ContextUserNumber,context,err)
   CALL cmfe_Region_Initialise(worldRegion,err)
   CALL cmfe_Context_WorldRegionGet(context,worldRegion,err)
 
@@ -412,7 +414,10 @@ PROGRAM ActiveContractionExample
   CALL cmfe_Fields_ElementsExport(Fields,"./results/ActiveContraction","FORTRAN",Err)
   CALL cmfe_Fields_Finalise(Fields,Err)
 
-  CALL cmfe_Finalise(context,Err)
+  !Destroy the context
+  CALL cmfe_Context_Destroy(context,err)
+  !Finalise OpenCMISS
+  CALL cmfe_Finalise(err)
 
   WRITE(*,'(A)') "Program successfully completed."
 
