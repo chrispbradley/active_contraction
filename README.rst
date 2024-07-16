@@ -10,9 +10,10 @@ Building the example
 This example can be configure and built with CMake using the following commands::
 
   git clone https://github.com/OpenCMISS-Examples/active_contraction.git
-  mkdir active_contraction-build
-  cd active_contraction-build
-  cmake -DOpenCMISSLibs_DIR=/path/to/opencmisslib/install ../active_contraction
+  cd active_contraction
+  mkdir build
+  cd build
+  cmake -DOpenCMISS_INSTALL_ROOT=/path/to/opencmiss/install ../.
   make  # cmake --build . will also work here and is much more platform agnostic.
 
 Running the example
