@@ -367,9 +367,9 @@ PROGRAM ActiveContractionExample
   CALL OC_Solver_Initialise(Solver,Err)
   CALL OC_Solver_Initialise(LinearSolver,Err)
   CALL OC_Problem_SolversCreateStart(Problem,Err)
-  CALL OC_Problem_SolverGet(Problem,OC_CONTROL_LOOP_NODE,1,Solver,Err)
+  CALL OC_Problem_SolverGet(Problem,OC_CONTROL_LOOP_NODE,2,Solver,Err)
   CALL OC_Solver_OutputTypeSet(Solver,OC_SOLVER_PROGRESS_OUTPUT,Err)
-  CALL OC_Solver_NewtonJacobianCalculationTypeSet(Solver,OC_SOLVER_NEWTON_JACOBIAN_FD_CALCULATED,Err) ! faster than OC_SOLVER_NEWTON_JACOBIAN_FD_CALCULATED ?
+  CALL OC_Solver_NewtonJacobianCalculationTypeSet(Solver,OC_SOLVER_NEWTON_JACOBIAN_EQUATIONS_CALCULATED,Err) ! faster than OC_SOLVER_NEWTON_JACOBIAN_FD_CALCULATED ?
   CALL OC_Solver_NewtonLinearSolverGet(Solver,LinearSolver,Err)
   CALL OC_Solver_LinearTypeSet(LinearSolver,OC_SOLVER_LINEAR_DIRECT_SOLVE_TYPE,Err)
   CALL OC_Problem_SolversCreateFinish(Problem,Err)
@@ -378,7 +378,7 @@ PROGRAM ActiveContractionExample
   CALL OC_Solver_Initialise(Solver,Err)
   CALL OC_SolverEquations_Initialise(SolverEquations,Err)
   CALL OC_Problem_SolverEquationsCreateStart(Problem,Err)   
-  CALL OC_Problem_SolverGet(Problem,OC_CONTROL_LOOP_NODE,1,Solver,Err)
+  CALL OC_Problem_SolverGet(Problem,OC_CONTROL_LOOP_NODE,2,Solver,Err)
   CALL OC_Solver_SolverEquationsGet(Solver,SolverEquations,Err)
   CALL OC_SolverEquations_EquationsSetAdd(SolverEquations,EquationsSet,EquationsSetIndex,Err)
   CALL OC_Problem_SolverEquationsCreateFinish(Problem,Err)
